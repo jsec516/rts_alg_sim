@@ -15,7 +15,7 @@ class TaskInput extends React.Component {
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
     handleSubmit = () => {
-        this.props.handler({...this.state});
+        this.props.handler([this.state.taskId, this.state.exec, this.state.deadline]);
         // this.setState({
         //     taskId: null,
         //     exec: null,

@@ -1,97 +1,119 @@
-export default function edf(task_info_edf_raw) {
-	const task_info_edf = task_info_edf_raw.map(item => [new Number(item.taskId), new Number(item.exec), new Number(item.deadline)])
-	const SIMULATION_TIME = 35;
+const preprocess = (raw_tasks) => {
+	return raw_tasks.map(item => {
+		let task_id = item.id;
+		let period = item.exec;
+		let wcet = item.period;
+		let arrival_time = 0.0
+		let deadline = arrival_time + period
+		let ceu = 0.0
+		let slack_time = (deadline - 0.0) - (wcet - ceu)
+		let pre_emption_count = 0
+		let deadline_misses = 0
+		let completion_count = 0
+		let cumulative_response_time = 0.0
+		let temp_list = {task_id, period, wcet, arrival_time, deadline, slack_time, ceu, pre_emption_count, deadline_misses, completion_count, cumulative_response_time, color: item.color};
+		return temp_list;
+	})
+	
+}
 
-	console.log("EDF Scheduler");
+function getRandomColor() {
+	var letters = '0123456789ABCDEF';
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+	  color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+  }
+
+export default function edf(input, resultUpdater) {
+	/* const input = [
+		[1, 10, 4],
+		[2, 7, 1],
+		[3, 9, 5]
+	]; */
+	const task_info_edf = input.map(item => ({
+		id: new Number(item[0]),
+		exec: new Number(item[1]),
+		period: new Number(item[2]),
+		color: getRandomColor()
+	}))
+	let collector = {
+		axis: [],
+		data: []
+	};
+	const SIMULATION_TIME = 35;
 	console.log(task_info_edf);
 
-	var task = [];
-
-	for (var i = 0; i < task_info_edf.length; i++) {
-
-		var task_id = task_info_edf[i][0];
-		var period = task_info_edf[i][1];
-		var wcet = task_info_edf[i][2];
-		var a_time = 0.0
-		var deadline = a_time + period
-		var ceu = 0.0
-		var slack_time = (deadline - 0.0) - (wcet - ceu)
-		var pre_emption_count = 0
-		var deadline_misses = 0
-		var completion_count = 0
-		var cumulative_response_time = 0.0
-		var temp_list = [task_id, period, wcet, a_time, deadline, slack_time, ceu, pre_emption_count, deadline_misses, completion_count, cumulative_response_time];
-		task.push(temp_list);
-	}
-
-	task.sort(function (x, y) {
-		return x[4] - y[4];
+	let tasks = preprocess(task_info_edf);
+	tasks.sort(function (x, y) {
+		return x.arrival_time - y.arrival_time;
 	}); //sort on deadline
+	let current_process_time = 0;
+	let current_process = 0;
+	let last_process = 0;
 
-
-	var time = 0.0;
-	var current_process = 0;
-	var total_tasks = task_info_edf.length;
-	var last_process = 0;
-
-	while (time <= SIMULATION_TIME) {
-		console.log("At Time : " + time.toString());
+	while (current_process_time <= SIMULATION_TIME) {
+		console.log("At Time : " + current_process_time.toString());
 		current_process = -1;
 
-		for (i = 0; i < task.length; i++) {
-			if (task[i][3] <= time) {
+		for (let i = 0; i < tasks.length; i++) {
+			if (tasks[i].arrival_time <= current_process_time) {
 				current_process = i;
 				break;
 			}
 		}
 
 
-		if ((current_process != last_process) && task[last_process][6] > 0.0) {
-			console.log("    PRE-EMPTING TASK " + task[last_process][0].toString());
-			task[last_process][7] = task[last_process][7] + 1;
+		if ((current_process != last_process) && tasks[last_process].ceu > 0) {
+			console.log("    PRE-EMPTING TASK " + tasks[last_process].task_id.toString());
+			tasks[last_process].pre_emption_count = tasks[last_process].pre_emption_count + 1;
 		}
-		console.log("EXECUTING TASK " + task[current_process][0].toString());
-		// if (task[current_process][0] == 2) {
+		console.log("EXECUTING TASK " + tasks[current_process].task_id.toString());
+		collector.axis.push(current_process_time);
+		collector.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
+		// if (tasks[current_process][0] == 2) {
 		// 	changeTable('blue');
 		// 	appendColumn();	
 		// }
-		// if (task[current_process][0] == 1) {
+		// if (tasks[current_process][0] == 1) {
 		// 	changeTable('green');
 		// 	appendColumn();
 		// }
-		// if (task[current_process][0] == 3) {
+		// if (tasks[current_process][0] == 3) {
 		// 	changeTable('yellow');
 		// 	appendColumn();
 		// }
 
 		if (current_process > -1) {
-			task[current_process][6] = task[current_process][6] + 1.0;
+			tasks[current_process].ceu = tasks[current_process].ceu + 1.0;
 
-			if (task[current_process][6] == task[current_process][2]) {
+			if (tasks[current_process].ceu == tasks[current_process].wcet) {
 
-				console.log("    TASK COMPLETED " + task[current_process][0].toString());
-				task[current_process][9] += 1;
-				task[current_process][10] += time + 1.0 - task[current_process][3];
-				task[current_process][3] += task[current_process][1];
-				task[current_process][4] = task[current_process][3] + task[current_process][1];
-				task[current_process][6] = 0.0;
+				console.log("    TASK COMPLETED " + tasks[current_process].task_id.toString());
+				tasks[current_process].completion_count += 1;
+				tasks[current_process].cumulative_response_time += current_process_time + 1.0 - tasks[current_process].arrival_time;
+				tasks[current_process].arrival_time += tasks[current_process].period;
+				tasks[current_process].deadline = tasks[current_process].arrival_time + tasks[current_process].period;
+				tasks[current_process].ceu = 0.0;
 			}
 		}
 
-		for (i = 0; i < task.length; i++) {
-			if (task[i][4] < time) {
-				console.log("    TASK " + task[i][0].toString() + " MISSED DEADLINE!!");
-				task[i][8] = task[i][8] + 1;
-				task[i][3] += task[i][1];
-				task[i][4] = task[i][3] + task[i][1];
-				task[i][6] = 0.0;
+		for (let i = 0; i < tasks.length; i++) {
+			if (tasks[i].deadline < current_process_time) {
+				console.log("    TASK " + tasks[i].task_id.toString() + " MISSED DEADLINE!!");
+				tasks[i].deadline_misses = tasks[i].deadline_misses + 1;
+				tasks[i].arrival_time += tasks[i].period;
+				tasks[i].deadline = tasks[i].arrival_time + tasks[i].period;
+				tasks[i].ceu = 0.0;
 			}
 		}
 
-		time += 1.0;
+		current_process_time += 1.0;
 		last_process = current_process;
-		task.sort(function (x, y) {
-			return x[4] - y[4]; //sort on deadline
+		tasks.sort(function (x, y) {
+			return x.deadline - y.deadline; //sort on deadline
 		});
+		resultUpdater(collector);
 	}
 }

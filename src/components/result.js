@@ -1,16 +1,19 @@
 import React from 'react';
 import { Button, Form } from 'semantic-ui-react'
-const options = [
-    { key: 'edf', text: 'Earliest Deadline First', value: 'edf' },
-    { key: 'rms', text: 'Rate-Monotonic Scheduling', value: 'rms' },
-    { key: 'lst', text: 'Least Slack Time', value: 'lst' },
-];
+import edf from './chart/edf';
 
-const Result = () => (
-    <div>
-        Result Panel
-    </div>
-  )
+const resultMapper = {
+    edf: edf
+}
+const Result = ({payload, algorithm}) => {
+    const ResultPanel = resultMapper[algorithm];
+    if(!ResultPanel) {
+        return null;
+    }
+    return (
+        <ResultPanel payload={payload} />
+    );
+  }
   
   export default Result
   

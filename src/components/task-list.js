@@ -8,15 +8,17 @@ const TaskList = ({tasks, handler}) => (
             <Table.HeaderCell>Task ID</Table.HeaderCell>
             <Table.HeaderCell>Execution Time</Table.HeaderCell>
             <Table.HeaderCell>Deadline</Table.HeaderCell>
+            <Table.HeaderCell>Action</Table.HeaderCell>
         </Table.Row>
         </Table.Header>
 
         <Table.Body>
             {tasks.map((item, index) => (
                 <Table.Row key={index}>
-                    <Table.Cell>{item.taskId}</Table.Cell>
-                    <Table.Cell>{item.exec}</Table.Cell>
-                    <Table.Cell>{item.deadline}</Table.Cell>
+                    <Table.Cell>{item[0]}</Table.Cell>
+                    <Table.Cell>{item[1]}</Table.Cell>
+                    <Table.Cell>{item[2]}</Table.Cell>
+                    <Table.Cell><a href="" onClick={(e) => handler(e, index)}>Remove</a></Table.Cell>
                 </Table.Row>
             ))}
         </Table.Body>
