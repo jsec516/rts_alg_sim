@@ -25,7 +25,11 @@ class App extends React.Component {
       result: {
         data: [],
         axis: []
-      }
+      },
+      /*resultmissed: {
+        datamissed: [],
+        axismissed: []
+      }*/
     };
     this.handleTaskRequest = this.handleTaskRequest.bind(this);
     this.runSimulation = this.runSimulation.bind(this);
@@ -51,12 +55,16 @@ class App extends React.Component {
   updateResult = (result) => {
     this.setState({result});
   }
+  /*updateResultMissed = (resultmissed) => {
+    this.setState({resultmissed});
+  }*/
 
   runSimulation(e) {
     e.preventDefault();
     const selectedAlg = taskMapper[this.state.algorithm];
     if(selectedAlg) {
       selectedAlg(this.state.tasks, this.updateResult);
+      //selectedAlg(this.state.tasks, this.updateResultMissed);
     }
   }
 
@@ -69,6 +77,7 @@ class App extends React.Component {
           <div className="steps"><Step fluid title="Current Task List" content={<TaskList tasks={this.state.tasks} handler={this.handleRemoveTask} />} /></div>
           <div className="steps"><Button primary onClick={this.runSimulation}>{this.state.algorithm ? `Simulate ${this.state.algorithm} Algorithm`: `Select an algorithm`}</Button></div>
           <div className="result"><Step fluid title="Simulation Result" content={<Result payload={this.state.result} algorithm={this.state.algorithm}/>} /></div>
+  
         </div>
       </div>
     );
