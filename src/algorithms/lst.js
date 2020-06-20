@@ -43,8 +43,8 @@ export default function lst(input, resultUpdater) {
 		data: []
 	};
 	let collectormissed = {
-		axismissed: [],
-		datamissed: []
+		axis: [],
+		data: []
 	};
 	const SIMULATION_TIME = 35;
 	console.log(task_info_lst);
@@ -106,8 +106,8 @@ export default function lst(input, resultUpdater) {
 		for (let i = 0; i < tasks.length; i++) {
 			if (tasks[i].deadline < current_process_time) {
 				console.log("    TASK " + tasks[i].task_id.toString() + " MISSED DEADLINE!!");
-				collectormissed.axismissed.push(current_process_time);
-				collectormissed.datamissed.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
+				collectormissed.axis.push(current_process_time);
+				collectormissed.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
 				tasks[i].deadline_misses = tasks[i].deadline_misses + 1;
 				tasks[i].arrival_time += tasks[i].period;
 				tasks[i].deadline = tasks[i].arrival_time + tasks[i].period;
@@ -120,7 +120,8 @@ export default function lst(input, resultUpdater) {
 		tasks.sort(function (x, y) {
 			return x.slack_time - y.slack_time; //sort on slack time
 		});
-		resultUpdater(collector);
-		//resultUpdater(collectormissed);
+		resultUpdater({
+			collector,
+			collectormissed});
 	}
 }
