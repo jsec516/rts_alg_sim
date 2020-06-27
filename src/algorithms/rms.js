@@ -27,6 +27,7 @@ function getRandomColor() {
   }
 
 export default function rms(input, resultUpdater) {
+	try{
 	/* const input = [
 		[1, 10, 4],
 		[2, 7, 1],
@@ -43,6 +44,10 @@ export default function rms(input, resultUpdater) {
 		data: []
 	};
 	let collectormissed = {
+		axis: [],
+		data: []
+	};
+	let collectorcomplete = {
 		axis: [],
 		data: []
 	};
@@ -95,6 +100,8 @@ export default function rms(input, resultUpdater) {
 			if (tasks[current_process].ceu == tasks[current_process].wcet) {
 
 				console.log("    TASK COMPLETED " + tasks[current_process].task_id.toString());
+				collectorcomplete.axis.push(current_process_time);
+				collectorcomplete.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
 				tasks[current_process].completion_count += 1;
 				tasks[current_process].cumulative_response_time += current_process_time + 1.0 - tasks[current_process].arrival_time;
 				tasks[current_process].arrival_time += tasks[current_process].period;
@@ -122,7 +129,10 @@ export default function rms(input, resultUpdater) {
 		});
 		resultUpdater({
 			collector,
-			collectormissed});
+			collectormissed,
+			collectorcomplete});
 		}
-	}
+}catch{
+	window.alert("Deadline yet to be finished while no task left to be executed!")
+}}
 

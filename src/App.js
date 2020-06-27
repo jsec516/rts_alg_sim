@@ -26,7 +26,9 @@ class App extends React.Component {
         collector:{data: [],
         axis: []},
         collectormissed:{data: [],
-          axis: []}
+          axis: []},
+          collectorcomplete:{data: [],
+            axis: []}
       },
       /*resultmissed: {
         datamissed: [],
@@ -78,9 +80,9 @@ class App extends React.Component {
           <div className="steps"><Step fluid title="Add Task" content={<TaskInput handler={this.handleTaskRequest} />} /></div>
           <div className="steps"><Step fluid title="Current Task List" content={<TaskList tasks={this.state.tasks} handler={this.handleRemoveTask} />} /></div>
           <div className="steps"><Button primary onClick={this.runSimulation}>{this.state.algorithm ? `Simulate ${this.state.algorithm} Algorithm`: `Select an algorithm`}</Button></div>
-          <div className="result"><Step fluid title="Simulation Result" content={<Result payload={this.state.result.collector} algorithm={this.state.algorithm}/>} /></div>
-          <div className="result"><Step fluid title="Simulation Deadline Missed Result" content={<Result payload={this.state.result.collectormissed} algorithm={this.state.algorithm}/>} /></div>
-
+          <div className="result"><Step fluid title="Simulation Result Executed Tasks" content={<Result payload={this.state.result.collector} algorithm={this.state.algorithm}/>} /></div>
+          <div className="result"><Step fluid title="Simulation Result Deadline Misses" content={<Result payload={this.state.result.collectormissed} algorithm={this.state.algorithm}/>} /></div>
+          <div className="result"><Step fluid title="Simulation Deadline Completed Tasks" content={<Result payload={this.state.result.collectorcomplete} algorithm={this.state.algorithm}/>} /></div>
         </div>
       </div>
     );
