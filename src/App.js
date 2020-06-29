@@ -1,5 +1,6 @@
 import React from 'react';
 import InputForm from './components/form';
+import SimulateForm from './components/simulateForm';
 import TaskInput from './components/task-input';
 import Step from './components/step';
 import './App.css';
@@ -21,6 +22,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       algorithm: null,
+      simulation_time: 0,
       tasks: [],
       result: {
         collector:{data: [],
@@ -56,6 +58,10 @@ class App extends React.Component {
     this.setState({algorithm: item.value});
   }
 
+  updateSimulationTime = (e, item) => {
+    this.setState({simulation_time: item.value});
+  }
+
   updateResult = (result) => {
     this.setState({result});
   }
@@ -67,7 +73,7 @@ class App extends React.Component {
     e.preventDefault();
     const selectedAlg = taskMapper[this.state.algorithm];
     if(selectedAlg) {
-      selectedAlg(this.state.tasks, this.updateResult);
+      selectedAlg(this.state.tasks, this.state.simulation_time, this.updateResult);
       //selectedAlg(this.state.tasks, this.updateResultMissed);
     }
   }
@@ -77,12 +83,12 @@ class App extends React.Component {
       <div className="ui middle aligned center aligned grid container">
         <div className="column ">
           <div className="steps"><Step title="which algorithm you want to simulate" content={<InputForm handler={this.updateAlg}/>} /></div>
+          <div className="steps"><Step title="simulation time" content={<SimulateForm handler={this.updateSimulationTime}/>} /></div>
           <div className="steps"><Step fluid title="Add Task" content={<TaskInput handler={this.handleTaskRequest} />} /></div>
           <div className="steps"><Step fluid title="Current Task List" content={<TaskList tasks={this.state.tasks} handler={this.handleRemoveTask} />} /></div>
           <div className="steps"><Button primary onClick={this.runSimulation}>{this.state.algorithm ? `Simulate ${this.state.algorithm} Algorithm`: `Select an algorithm`}</Button></div>
           <div className="result"><Step fluid title="Simulation Result Executed Tasks" content={<Result payload={this.state.result.collector} algorithm={this.state.algorithm}/>} /></div>
           <div className="result"><Step fluid title="Simulation Result Deadline Misses" content={<Result payload={this.state.result.collectormissed} algorithm={this.state.algorithm}/>} /></div>
-          <div className="result"><Step fluid title="Simulation Deadline Completed Tasks" content={<Result payload={this.state.result.collectorcomplete} algorithm={this.state.algorithm}/>} /></div>
         </div>
       </div>
     );

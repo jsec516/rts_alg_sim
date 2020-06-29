@@ -26,7 +26,7 @@ function getRandomColor() {
 	return color;
   }
 
-export default function rms(input, resultUpdater) {
+export default function rms(input, simulationTime, resultUpdater) {
 	try{
 	/* const input = [
 		[1, 10, 4],
@@ -51,7 +51,7 @@ export default function rms(input, resultUpdater) {
 		axis: [],
 		data: []
 	};
-	const SIMULATION_TIME = 35;
+	const SIMULATION_TIME = new Number(simulationTime);
 	console.log(task_info_rms);
 
 	let tasks = preprocess(task_info_rms);
@@ -73,14 +73,20 @@ export default function rms(input, resultUpdater) {
 			}
 		}
 
-
-		if ((current_process != last_process) && tasks[last_process].ceu > 0) {
+		//added for sanity check
+		if ((current_process != last_process) && tasks[last_process] && tasks[last_process].ceu > 0) {
 			console.log("    PRE-EMPTING TASK " + tasks[last_process].task_id.toString());
 			tasks[last_process].pre_emption_count = tasks[last_process].pre_emption_count + 1;
 		}
-		console.log("EXECUTING TASK " + tasks[current_process].task_id.toString());
 		collector.axis.push(current_process_time);
-		collector.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
+		if(tasks[current_process]) {
+			console.log("EXECUTING TASK " + tasks[current_process].task_id.toString());
+			collector.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
+		} else {
+			console.log("IDLE TIME ");
+			collector.data.push({color: "#fff", text: "NA"});
+		}
+		
 		// if (tasks[current_process][0] == 2) {
 		// 	changeTable('blue');
 		// 	appendColumn();	
@@ -114,7 +120,7 @@ export default function rms(input, resultUpdater) {
 			if (tasks[i].deadline < current_process_time) {
 				console.log("    TASK " + tasks[i].task_id.toString() + " MISSED DEADLINE!!");
 				collectormissed.axis.push(current_process_time);
-				collectormissed.data.push({color: tasks[current_process].color, text: tasks[current_process].task_id});
+				collectormissed.data.push({color: tasks[i].color, text: tasks[i].task_id});
 				tasks[i].deadline_misses = tasks[i].deadline_misses + 1;
 				tasks[i].arrival_time += tasks[i].period;
 				tasks[i].deadline = tasks[i].arrival_time + tasks[i].period;
@@ -127,11 +133,11 @@ export default function rms(input, resultUpdater) {
 		tasks.sort(function (x, y) {
 			return x.period - y.period; //sort on period
 		});
+		}
 		resultUpdater({
 			collector,
 			collectormissed,
 			collectorcomplete});
-		}
 }catch{
 	window.alert("Deadline yet to be finished while no task left to be executed!")
 }}

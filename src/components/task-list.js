@@ -6,8 +6,8 @@ const TaskList = ({tasks, handler}) => (
         <Table.Header>
         <Table.Row>
             <Table.HeaderCell>Task ID</Table.HeaderCell>
-            <Table.HeaderCell>Execution Time</Table.HeaderCell>
             <Table.HeaderCell>Deadline</Table.HeaderCell>
+            <Table.HeaderCell>Execution Time</Table.HeaderCell>
             <Table.HeaderCell>Action</Table.HeaderCell>
         </Table.Row>
         </Table.Header>
