@@ -8,6 +8,7 @@ constructor(props) {
         taskId: null,
         exec: null,
         deadline: null, 
+        period: null,
         simulationtime: null
     }
 }
@@ -16,7 +17,7 @@ constructor(props) {
 handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
 handleSubmit = () => {
-    this.props.handler([this.state.taskId, this.state.exec, this.state.deadline]);
+    this.props.handler([this.state.taskId, this.state.exec, this.state.deadline, this.state.period]);
     // this.setState({
     //     taskId: null,
     //     exec: null,
@@ -26,7 +27,7 @@ handleSubmit = () => {
 
 
 render() {
-    const {taskId, exec, deadline} = this.state;
+    const {taskId, exec, deadline, period} = this.state;
     return (
         
         <Form onSubmit={this.handleSubmit}>
@@ -41,6 +42,9 @@ render() {
             <Form.Input type="number" fluid placeholder='Execution Time' name='deadline'
             value={deadline}
             onChange={this.handleChange}/>
+            { (this.props.algorithm === 'lst' || this.props.algorithm === 'edf') && <Form.Input type="number" fluid placeholder='Period Time' name='period'
+            value={period}
+            onChange={this.handleChange}/>}
             </Form.Group>
         
             <Button primary>Add to task-list</Button>

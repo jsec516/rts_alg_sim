@@ -2,10 +2,10 @@
 const preprocess = (raw_tasks) => {
 return raw_tasks.map(item => {
 	let task_id = item.id;
-	let period = item.exec;
-	let wcet = item.period;
+	let period = item.period;
+	let wcet = item.exec;
 	let arrival_time = 0.0
-	let deadline = arrival_time + period
+	let deadline = item.deadline;
 	let ceu = 0.0
 	let slack_time = (deadline - 0.0) - (wcet - ceu)
 	let pre_emption_count = 0
@@ -29,15 +29,16 @@ return color;
 
 export default function edf(input, simulationTime, resultUpdater) {
 
-	/* const input = [
-		[1, 10, 4],
-		[2, 7, 1],
-		[3, 9, 5]
-	]; */
-	const task_info_edf = input.map(item => ({
+	const inputNew = [
+			[1,7,3,20],
+			[2,4,2,5],
+			[3,8,2,10]
+		]
+	const task_info_edf = inputNew.map(item => ({
 		id: new Number(item[0]),
-		exec: new Number(item[1]),
-		period: new Number(item[2]),
+		deadline: new Number(item[1]),
+		exec: new Number(item[2]),
+		period: new Number(item[3]),
 		color: getRandomColor()
 	}))
 	let collector = {
@@ -63,7 +64,7 @@ export default function edf(input, simulationTime, resultUpdater) {
 	let current_process = 0;
 	let last_process = 0;
 
-	while (current_process_time <= SIMULATION_TIME) {
+	while (current_process_time < SIMULATION_TIME) {
 		console.log("At Time : " + current_process_time.toString());
 		current_process = -1;
 

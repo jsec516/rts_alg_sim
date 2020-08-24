@@ -1,13 +1,14 @@
 import React from 'react';
 import { Table, Label } from 'semantic-ui-react'
 
-const TaskList = ({tasks, handler}) => (
+const TaskList = ({tasks, handler, algorithm}) => (
     <Table celled>
         <Table.Header>
         <Table.Row>
             <Table.HeaderCell>Task ID</Table.HeaderCell>
             <Table.HeaderCell>Deadline</Table.HeaderCell>
             <Table.HeaderCell>Execution Time</Table.HeaderCell>
+            {(algorithm=='lst' || algorithm=='edf') && <Table.HeaderCell>Period</Table.HeaderCell>}
             <Table.HeaderCell>Action</Table.HeaderCell>
         </Table.Row>
         </Table.Header>
@@ -18,6 +19,7 @@ const TaskList = ({tasks, handler}) => (
                     <Table.Cell>{item[0]}</Table.Cell>
                     <Table.Cell>{item[1]}</Table.Cell>
                     <Table.Cell>{item[2]}</Table.Cell>
+                    {(algorithm=='lst' || algorithm=='edf') && <Table.Cell>{item[3]}</Table.Cell>}
                     <Table.Cell><a href="" onClick={(e) => handler(e, index)}>Remove</a></Table.Cell>
                 </Table.Row>
             ))}

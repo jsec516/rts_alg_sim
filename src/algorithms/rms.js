@@ -62,7 +62,7 @@ export default function rms(input, simulationTime, resultUpdater) {
 	let current_process = 0;
 	let last_process = 0;
 
-	while (current_process_time <= SIMULATION_TIME) {
+	while (current_process_time < SIMULATION_TIME) {
 		console.log("At Time : " + current_process_time.toString());
 		current_process = -1;
 
@@ -87,19 +87,6 @@ export default function rms(input, simulationTime, resultUpdater) {
 			collector.data.push({color: "#fff", text: "NA"});
 		}
 		
-		// if (tasks[current_process][0] == 2) {
-		// 	changeTable('blue');
-		// 	appendColumn();	
-		// }
-		// if (tasks[current_process][0] == 1) {
-		// 	changeTable('green');
-		// 	appendColumn();
-		// }
-		// if (tasks[current_process][0] == 3) {
-		// 	changeTable('yellow');
-		// 	appendColumn();
-		// }
-
 		if (current_process > -1) {
 			tasks[current_process].ceu = tasks[current_process].ceu + 1.0;
 

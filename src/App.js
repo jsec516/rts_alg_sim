@@ -84,8 +84,8 @@ class App extends React.Component {
         <div className="column ">
           <div className="steps"><Step title="which algorithm you want to simulate" content={<InputForm handler={this.updateAlg}/>} /></div>
           <div className="steps"><Step title="simulation time" content={<SimulateForm handler={this.updateSimulationTime}/>} /></div>
-          <div className="steps"><Step fluid title="Add Task" content={<TaskInput handler={this.handleTaskRequest} />} /></div>
-          <div className="steps"><Step fluid title="Current Task List" content={<TaskList tasks={this.state.tasks} handler={this.handleRemoveTask} />} /></div>
+          <div className="steps"><Step fluid title="Add Task" content={<TaskInput algorithm={this.state.algorithm} handler={this.handleTaskRequest} />} /></div>
+          <div className="steps"><Step fluid title="Current Task List" content={<TaskList algorithm={this.state.algorithm} tasks={this.state.tasks} handler={this.handleRemoveTask} />} /></div>
           <div className="steps"><Button primary onClick={this.runSimulation}>{this.state.algorithm ? `Simulate ${this.state.algorithm} Algorithm`: `Select an algorithm`}</Button></div>
           <div className="result"><Step fluid title="Simulation Result Executed Tasks" content={<Result payload={this.state.result.collector} algorithm={this.state.algorithm}/>} /></div>
           <div className="result"><Step fluid title="Simulation Result Deadline Misses" content={<Result payload={this.state.result.collectormissed} algorithm={this.state.algorithm}/>} /></div>
