@@ -29,12 +29,12 @@ return color;
 
 export default function edf(input, simulationTime, resultUpdater) {
 
-	const inputNew = [
-			[1,7,3,20],
-			[2,4,2,5],
-			[3,8,2,10]
-		]
-	const task_info_edf = inputNew.map(item => ({
+	// const inputNew = [
+	// 		[1,7,3,20],
+	// 		[2,4,2,5],
+	// 		[3,8,2,10]
+	// 	]
+	const task_info_edf = input.map(item => ({
 		id: new Number(item[0]),
 		deadline: new Number(item[1]),
 		exec: new Number(item[2]),
